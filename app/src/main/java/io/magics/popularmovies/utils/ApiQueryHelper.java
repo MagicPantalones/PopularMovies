@@ -1,5 +1,6 @@
 package io.magics.popularmovies.utils;
 
+import android.content.Context;
 import android.content.res.Resources;
 import android.net.Uri;
 
@@ -28,8 +29,6 @@ public class ApiQueryHelper {
     public static final String POPULAR_QUERY = "popular";
     public static final String TOP_RATED_QUERY = "top_rated";
 
-    public static final String API_KEY = Resources.getSystem().getString(R.string.THE_MOVIE_DB_API_TOKEN);
-
     public static final String DEFAULT_LOCALE = "en_US";
 
     private static final String IMAGE_SIZE_SMALL = "w92";
@@ -43,8 +42,9 @@ public class ApiQueryHelper {
      * @return Url to query the TheMovieDB.org api
      * @throws IllegalArgumentException if the wrong query option has been used.
      */
-    public static URL buildApiQueryUrl(String sortingQuery, int pageNumber){
+    public static URL buildApiQueryUrl(Context context, String sortingQuery, int pageNumber){
         if (sortingQuery.equals(POPULAR_QUERY) || sortingQuery.equals(TOP_RATED_QUERY)){
+            final String API_KEY = context.getResources().getString(R.string.THE_MOVIE_DB_API_TOKEN);
             Uri builtUri = Uri.parse(BASE_QUERY_API_URL).buildUpon()
                     .appendPath(MOVIE_QUERY)
                     .appendPath(sortingQuery)
@@ -64,7 +64,8 @@ public class ApiQueryHelper {
         return null;
     }
 
-    private static URL buildGenreListQuery(){
+    private static URL buildGenreListQuery(Context context){
+        final String API_KEY = context.getResources().getString(R.string.THE_MOVIE_DB_API_TOKEN);
         Uri builtUri = Uri.parse(BASE_QUERY_API_URL).buildUpon()
                 .appendPath(GENRE_LIST_QUERY)
                 .appendPath(MOVIE_QUERY)
@@ -102,7 +103,7 @@ public class ApiQueryHelper {
 
         Uri builtUri = Uri.parse(BASE_QUERY_IMG_URL).buildUpon()
                 .appendPath(requestedImgSize)
-                .appendPath(posterPath)
+                .appendEncodedPath(posterPath)
                 .build();
 
         return builtUri.toString();
@@ -130,6 +131,11 @@ public class ApiQueryHelper {
         SIZE_MEDIUM,
         SIZE_SMALL,
         SIZE_DEFAULT
+    }
+
+    public enum SortingMethod{
+        POPULAR,
+        TOP_RATED
     }
 
 }

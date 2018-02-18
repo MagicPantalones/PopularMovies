@@ -10,7 +10,7 @@ import java.util.List;
 public class Movie {
 
     private String posterPath;
-    private String originalTitle;
+    private String title;
     private List<String> genre;
     private String overview;
     private String voteAverage;
@@ -18,9 +18,9 @@ public class Movie {
 
     public Movie(){}
 
-    public Movie(String posterPath, String originalTitle, List<String> genre, String overview, String voteAverage, String voteCount){
+    public Movie(String posterPath, String title, List<String> genre, String overview, String voteAverage, String voteCount){
         this.posterPath = posterPath;
-        this.originalTitle = originalTitle;
+        this.title = title;
         this.genre = genre;
         this.overview = overview;
         this.voteAverage = voteAverage;
@@ -31,9 +31,9 @@ public class Movie {
 
     public void setPosterPath(String posterPath){ this.posterPath = posterPath; }
 
-    public String getOriginalTitle(){ return originalTitle; }
+    public String getTitle(){ return title; }
 
-    public void setOriginalTitle(String originalTitle){ this.originalTitle = originalTitle; }
+    public void setTitle(String title){ this.title = title; }
 
     public List<String> getGenre() { return genre; }
 

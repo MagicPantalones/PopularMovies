@@ -8,18 +8,18 @@ package io.magics.popularmovies.models;
 public class MovieForGrid {
 
     private String posterPath;
-    private String originalTitle;
+    private String title;
 
-    public MovieForGrid(String posterPath, String originalTitle){
+    public MovieForGrid(String posterPath, String title){
         this.posterPath = posterPath;
-        this.originalTitle = originalTitle;
+        this.title = title;
     }
 
     public String getPosterPath() { return posterPath; }
 
     public void setPosterPath(String posterPath) { this.posterPath = posterPath; }
 
-    public String getOriginalTitle() { return originalTitle; }
+    public String getTitle() { return title; }
 
-    public void setOriginalTitle(String originalTitle) { this.originalTitle = originalTitle; }
+    public void setTitle(String title) { this.title = title; }
 }

@@ -22,7 +22,7 @@ public class MovieDbJsonParser {
 
         final String RESULTS = "results";
         final String POSTER_PATH = "poster_path";
-        final String ORIGINAL_TITLE = "original_title";
+        final String TITLE = "title";
         final String STATUS_CODE = "status_code";
         final String STATUS_MESSAGE = "status_message";
 
@@ -44,13 +44,15 @@ public class MovieDbJsonParser {
             throw new JSONException("Array from \"result\" key is empty");
         }
 
+        movieForGrids = new MovieForGrid[rawMovieArray.length()];
+
         for (int i = 0; i < rawMovieArray.length(); i++){
             JSONObject rawMovieData = rawMovieArray.getJSONObject(i);
-            if (!rawMovieData.has(POSTER_PATH) || !rawMovieData.has(ORIGINAL_TITLE)){
+            if (!rawMovieData.has(POSTER_PATH) || !rawMovieData.has(TITLE)){
                 continue;
             }
             String posterPath = rawMovieData.optString(POSTER_PATH);
-            String originalTitle = rawMovieData.optString(ORIGINAL_TITLE);
+            String originalTitle = rawMovieData.optString(TITLE);
 
             movieForGrids[i] = new MovieForGrid(posterPath, originalTitle);
 
