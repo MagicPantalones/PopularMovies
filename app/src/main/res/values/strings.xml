@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Popular Movies</string>
+    <string name="grid_error">Error Loading GridView</string>
 </resources>

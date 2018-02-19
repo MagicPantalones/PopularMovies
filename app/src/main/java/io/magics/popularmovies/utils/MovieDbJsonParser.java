@@ -23,6 +23,8 @@ public class MovieDbJsonParser {
         final String RESULTS = "results";
         final String POSTER_PATH = "poster_path";
         final String TITLE = "title";
+        final String MOVIE_ID = "id";
+
         final String STATUS_CODE = "status_code";
         final String STATUS_MESSAGE = "status_message";
 
@@ -53,8 +55,9 @@ public class MovieDbJsonParser {
             }
             String posterPath = rawMovieData.optString(POSTER_PATH);
             String originalTitle = rawMovieData.optString(TITLE);
+            String movieId = rawMovieData.optString(MOVIE_ID);
 
-            movieForGrids[i] = new MovieForGrid(posterPath, originalTitle);
+            movieForGrids[i] = new MovieForGrid(posterPath, originalTitle, movieId);
 
         }
 
