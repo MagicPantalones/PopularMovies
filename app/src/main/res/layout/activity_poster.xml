@@ -2,14 +2,13 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#212121">
+    android:background="#212121"
+    android:orientation="vertical">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_grid_recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        />
+        android:layout_height="match_parent" />
 
 
     <ProgressBar
@@ -17,16 +16,15 @@
         android:layout_width="42dp"
         android:layout_height="42dp"
         android:layout_centerInParent="true"
-        android:visibility="invisible"
-        />
+        android:visibility="invisible" />
+
     <ImageView
         android:id="@+id/iv_error"
-        android:contentDescription="@string/grid_error"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/logo_app"
         android:layout_centerInParent="true"
-        android:visibility="gone"
-        />
+        android:contentDescription="@string/grid_error"
+        android:src="@drawable/logo_app"
+        android:visibility="gone" />
 
 </RelativeLayout>

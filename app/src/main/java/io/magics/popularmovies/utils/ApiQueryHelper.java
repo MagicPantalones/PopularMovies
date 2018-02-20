@@ -1,8 +1,8 @@
 package io.magics.popularmovies.utils;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.net.Uri;
+import android.util.Log;
 
 import java.io.IOException;
 import java.net.MalformedURLException;
@@ -19,17 +19,17 @@ import io.magics.popularmovies.R;
  */
 
 public class ApiQueryHelper {
-    public static final String BASE_QUERY_API_URL = "https://api.themoviedb.org/3";
-    public static final String BASE_QUERY_IMG_URL = "https://image.tmdb.org/t/p";
+    private static final String TAG = ApiQueryHelper.class.getSimpleName();
 
-    public static final String MOVIE_QUERY = "movie";
-    public static final String GENRE_LIST_QUERY = "genre";
-    public static final String LIST_QUERY = "list";
+    private static final String BASE_QUERY_API_URL = "https://api.themoviedb.org/3";
+    private static final String BASE_QUERY_IMG_URL = "https://image.tmdb.org/t/p";
 
-    public static final String POPULAR_QUERY = "popular";
-    public static final String TOP_RATED_QUERY = "top_rated";
+    private static final String MOVIE_PATH = "movie";
 
-    public static final String DEFAULT_LOCALE = "en_US";
+    private static final String POPULAR_QUERY = "popular";
+    private static final String TOP_RATED_QUERY = "top_rated";
+
+    private static final String DEFAULT_LOCALE = "en_US";
 
     private static final String IMAGE_SIZE_SMALL = "w92";
     private static final String IMAGE_SIZE_MEDIUM = "w342";
@@ -38,45 +38,53 @@ public class ApiQueryHelper {
 
     /**
      *
-     * @param sortingQuery The sorting configuration. This must be one of ApiQueryHelper.POPULAR_QUERY or ApiQueryHelper.TOP_RATED_QUERY
+     * @param sortingMethod enum for sorting method.
      * @return Url to query the TheMovieDB.org api
      * @throws IllegalArgumentException if the wrong query option has been used.
      */
-    public static URL buildApiQueryUrl(Context context, String sortingQuery, int pageNumber){
-        if (sortingQuery.equals(POPULAR_QUERY) || sortingQuery.equals(TOP_RATED_QUERY)){
-            final String API_KEY = context.getResources().getString(R.string.THE_MOVIE_DB_API_TOKEN);
-            Uri builtUri = Uri.parse(BASE_QUERY_API_URL).buildUpon()
-                    .appendPath(MOVIE_QUERY)
-                    .appendPath(sortingQuery)
-                    .appendQueryParameter("api_key", API_KEY)
-                    .appendQueryParameter("language", DEFAULT_LOCALE)
-                    .appendQueryParameter("page", Integer.toString(pageNumber))
-                    .build();
+    public static URL buildApiQueryUrl(Context context, SortingMethod sortingMethod, int pageNumber){
+        String sorting;
+        switch (sortingMethod){
+            case POPULAR:
+                sorting = POPULAR_QUERY;
+                break;
+            case TOP_RATED:
+                sorting = TOP_RATED_QUERY;
+                break;
+            default:
+                sorting = POPULAR_QUERY;
+                break;
+        }
+
+        final String API_KEY = context.getResources().getString(R.string.THE_MOVIE_DB_API_TOKEN);
+        Uri builtUri = Uri.parse(BASE_QUERY_API_URL).buildUpon()
+                .appendPath(MOVIE_PATH)
+                .appendPath(sorting)
+                .appendQueryParameter("api_key", API_KEY)
+                .appendQueryParameter("language", DEFAULT_LOCALE)
+                .appendQueryParameter("page", Integer.toString(pageNumber))
+                .build();
 
             try{
                 return new URL(builtUri.toString());
             } catch (MalformedURLException e){
-                e.printStackTrace();
+                Log.e(TAG, "Malformed URL", e);
             }
-        } else{
-            throw new IllegalArgumentException();
-        }
         return null;
     }
 
-    private static URL buildGenreListQuery(Context context){
+    public static URL buildMovieUrl(Context context, String movieId){
         final String API_KEY = context.getResources().getString(R.string.THE_MOVIE_DB_API_TOKEN);
         Uri builtUri = Uri.parse(BASE_QUERY_API_URL).buildUpon()
-                .appendPath(GENRE_LIST_QUERY)
-                .appendPath(MOVIE_QUERY)
-                .appendPath(LIST_QUERY)
+                .appendPath(MOVIE_PATH)
+                .appendPath(movieId)
                 .appendQueryParameter("api_key", API_KEY)
                 .appendQueryParameter("language", DEFAULT_LOCALE)
                 .build();
         try {
             return new URL(builtUri.toString());
         }catch (MalformedURLException e){
-            e.printStackTrace();
+            Log.e(TAG, "malformed Movie details URL", e);
         }
         return null;
     }

@@ -1,7 +1,5 @@
 package io.magics.popularmovies.models;
 
-import java.util.List;
-
 /**
  * A model class for the JSON parsing
  * Created by Erik on 17.02.2018.
@@ -11,20 +9,20 @@ public class Movie {
 
     private String posterPath;
     private String title;
-    private List<String> genre;
     private String overview;
     private String voteAverage;
     private String voteCount;
+    private String releaseDate;
 
     public Movie(){}
 
-    public Movie(String posterPath, String title, List<String> genre, String overview, String voteAverage, String voteCount){
+    public Movie(String posterPath, String title, String overview, String voteAverage, String voteCount, String releaseDate){
         this.posterPath = posterPath;
         this.title = title;
-        this.genre = genre;
         this.overview = overview;
         this.voteAverage = voteAverage;
         this.voteCount = voteCount;
+        this.releaseDate = releaseDate;
     }
 
     public String getPosterPath(){ return posterPath; }
@@ -35,9 +33,9 @@ public class Movie {
 
     public void setTitle(String title){ this.title = title; }
 
-    public List<String> getGenre() { return genre; }
+    public String getReleaseDate() { return releaseDate; }
 
-    public void setGenre(List<String> genre) { this.genre = genre; }
+    public void setReleaseDate(String releaseDate) { this.releaseDate = releaseDate; }
 
     public String getOverview(){ return overview; }
 
