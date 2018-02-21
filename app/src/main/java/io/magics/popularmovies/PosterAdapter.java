@@ -3,10 +3,10 @@ package io.magics.popularmovies;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ImageView;
 
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -31,12 +31,13 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
     private int mViewHeight;
     private final PosterClickHandler mClickHandler;
     private ReachedEndHandler mReachedEndHandler;
+    private ApiQueryHelper.ImageSize mImageSize;
 
     public interface PosterClickHandler{
         void onClick(String movieId, View view);
     }
 
-    //Took inspiration from https://medium.com/@ayhamorfali/android-detect-when-the-recyclerview-reaches-the-bottom-43f810430e1e
+    //Help from https://medium.com/@ayhamorfali/android-detect-when-the-recyclerview-reaches-the-bottom-43f810430e1e
     public interface ReachedEndHandler{
         void endReached(int position);
     }
@@ -53,6 +54,10 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
     public PosterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         Boolean orientation = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+
+        mImageSize = ApiQueryHelper.getOptimalImgSize(context);
+
+        //Sets the ViewHolder sizes based on the devise's orientation.
         mViewHeight = orientation ? parent.getMeasuredHeight() / 2 : parent.getMeasuredHeight();
         mViewWidth = orientation ? parent.getMeasuredWidth() / 2 : parent.getMeasuredWidth() / 3;
 
@@ -65,20 +70,22 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
     public void onBindViewHolder(PosterViewHolder holder, int position) {
         MovieForGrid mfg = mMovieData.get(position);
         ImageView iv = holder.mIv;
-        String posterUrl = ApiQueryHelper.buildImageUrl(mfg.getPosterPath(), ApiQueryHelper.ImageSize.SIZE_DEFAULT);
+        String posterUrl = ApiQueryHelper.buildImageUrl(mfg.getPosterPath(), mImageSize);
 
         if (position == mMovieData.size() - 1){
             mReachedEndHandler.endReached(position);
+            Log.d(TAG, "IMAGESIZE " + mImageSize);
         }
 
         iv.setContentDescription(mfg.getTitle());
         iv.setMinimumHeight(mViewHeight);
         iv.setMinimumWidth(mViewWidth);
 
+
         GlideApp.with(holder.itemView)
                 .load(posterUrl)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .placeholder(R.drawable.logo_app)
+                .placeholder(R.drawable.bg_loading_realydarkgrey)
                 .downsample(DownsampleStrategy.NONE)
                 .centerCrop()
                 .into(iv);
@@ -102,7 +109,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
     }
 
     public class PosterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public final ImageView mIv;
+        private final ImageView mIv;
 
         public PosterViewHolder(View itemView) {
             super(itemView);

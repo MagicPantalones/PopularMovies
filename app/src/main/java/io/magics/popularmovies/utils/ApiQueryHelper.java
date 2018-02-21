@@ -13,6 +13,8 @@ import javax.net.ssl.HttpsURLConnection;
 
 import io.magics.popularmovies.R;
 
+import static io.magics.popularmovies.utils.ApiQueryHelper.ImageSize.*;
+
 /**
  * Utility class for the API Query and getting the values.
  * Created by Erik on 17.02.2018.
@@ -36,12 +38,8 @@ public class ApiQueryHelper {
     private static final String IMAGE_SIZE_LARGE = "w500";
     private static final String IMAGE_SIZE_DEFAULT = "w185";
 
-    /**
-     *
-     * @param sortingMethod enum for sorting method.
-     * @return Url to query the TheMovieDB.org api
-     * @throws IllegalArgumentException if the wrong query option has been used.
-     */
+    //Builds the URLS to call the API
+
     public static URL buildApiQueryUrl(Context context, SortingMethod sortingMethod, int pageNumber){
         String sorting;
         switch (sortingMethod){
@@ -55,7 +53,10 @@ public class ApiQueryHelper {
                 sorting = POPULAR_QUERY;
                 break;
         }
-
+        /* Needed context to get the API get from resources.
+         To build the app, create a XML file called api_keys.xml in the values folder
+         create a string called THE_MOVIE_DB_API and put your API key there.
+        */
         final String API_KEY = context.getResources().getString(R.string.THE_MOVIE_DB_API_TOKEN);
         Uri builtUri = Uri.parse(BASE_QUERY_API_URL).buildUpon()
                 .appendPath(MOVIE_PATH)
@@ -101,9 +102,6 @@ public class ApiQueryHelper {
             case SIZE_SMALL:
                 requestedImgSize = IMAGE_SIZE_SMALL;
                 break;
-            case SIZE_DEFAULT:
-                requestedImgSize = IMAGE_SIZE_DEFAULT;
-                break;
             default:
                 requestedImgSize = IMAGE_SIZE_DEFAULT;
                 break;
@@ -132,6 +130,14 @@ public class ApiQueryHelper {
         } finally {
             urlConnection.disconnect();
         }
+    }
+    /* Gets phones screen size to figure the optimal ImageSize to get from the API
+       In case of a future ImageSize setting I'm implementing a method instead of resolving it directly in the parser.
+     */
+    public static ImageSize getOptimalImgSize(Context context){
+        float density = context.getResources().getDisplayMetrics().density;
+        if (density >= 3.0) return SIZE_MEDIUM;
+        else return SIZE_DEFAULT;
     }
 
     public enum ImageSize{

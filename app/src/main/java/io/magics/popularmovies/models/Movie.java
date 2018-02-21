@@ -1,7 +1,7 @@
 package io.magics.popularmovies.models;
 
 /**
- * A model class for the JSON parsing
+ * A model class for a movieId API call
  * Created by Erik on 17.02.2018.
  */
 

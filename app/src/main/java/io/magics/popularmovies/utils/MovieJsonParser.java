@@ -2,7 +2,6 @@ package io.magics.popularmovies.utils;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -22,7 +21,7 @@ import io.magics.popularmovies.models.MovieForGrid;
 
 
 /**
- * MovieDB parser
+ * MovieDB JSON parser
  * Created by Erik on 17.02.2018.
  */
 
@@ -42,9 +41,12 @@ public class MovieJsonParser {
     private static final String STATUS_CODE = "status_code";
     private static final String STATUS_MESSAGE = "status_message";
 
+    private MovieJsonParser(){}
+
+    /** Parses the Json response for the movie list.
+     *  Why it takes an Activity param is explained at {@link MovieJsonParser#isSuccess(JSONObject, Activity)}
+     */
     public static List<MovieForGrid> parseForGridView(String json, Activity activity) throws JSONException{
-
-
 
         JSONObject movieJson = new JSONObject(json);
         MovieForGrid[] moviesForGrid;
@@ -77,6 +79,7 @@ public class MovieJsonParser {
         return new ArrayList<>(Arrays.asList(moviesForGrid));
     }
 
+    //Parses the JSON response from a movieId query.
     public static Movie parseMovieDetails(String json, Activity activity) throws JSONException{
         String posterPath;
         String title;
@@ -100,7 +103,10 @@ public class MovieJsonParser {
         return new Movie(posterPath, title, overview, voteAverage, voteCount, releaseDate);
     }
 
-    public static Boolean isSuccess(final JSONObject jsonObject, final Activity activity){
+    /* Checks for an error response in the JSON.
+     * Calls the UIThread runnable from the activity and queues a toast if the server gave an error response.
+     */
+    private static Boolean isSuccess(final JSONObject jsonObject, final Activity activity){
 
         if (jsonObject.has(STATUS_CODE)){
             Log.d(TAG, "Status code: " + jsonObject.optString(STATUS_CODE) + " " + jsonObject.optString(STATUS_MESSAGE));
@@ -115,8 +121,7 @@ public class MovieJsonParser {
         return true;
     }
 
-    /*Formats date to "MMM dd(ordinal number), yyyy
-    */
+    //Formats date to "MMM dd(ordinal number), yyyy
 
     public static String formatDate(String dateString){
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
@@ -129,14 +134,15 @@ public class MovieJsonParser {
 
             return sdf1.format(month) + " " + day + ", " + dateSplit[0];
         } catch (ParseException e){
-            e.printStackTrace();
+            Log.e(TAG, "formatDate: ", e);
             return dateString;
         }
 
     }
 
     /*copied way to format the correct ordinal from Greg Mattes answer on
-    https://stackoverflow.com/questions/4011075/how-do-you-format-the-day-of-the-month-to-say-11th-21st-or-23rd-ordinal*/
+    https://stackoverflow.com/questions/4011075/how-do-you-format-the-day-of-the-month-to-say-11th-21st-or-23rd-ordinal
+    */
 
     private static String getOrdinal(String dayString){
         int dayInt = Integer.parseInt(dayString);

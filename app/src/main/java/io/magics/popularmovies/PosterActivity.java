@@ -26,7 +26,6 @@ import io.magics.popularmovies.utils.ApiQueryHelper;
 import io.magics.popularmovies.utils.MovieJsonParser;
 
 import static io.magics.popularmovies.utils.ApiQueryHelper.*;
-import static io.magics.popularmovies.utils.MovieJsonParser.*;
 
 public class PosterActivity extends AppCompatActivity
         implements PosterAdapter.PosterClickHandler{
@@ -37,7 +36,6 @@ public class PosterActivity extends AppCompatActivity
     private PosterAdapter mPosterAdapter;
     private ProgressBar mMovieLoader;
     private ImageView mErrorImage;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,8 +48,18 @@ public class PosterActivity extends AppCompatActivity
         mGridRecyclerView = findViewById(R.id.rv_grid_recycler);
 
         initRecycler();
+
+        connectAndFetchData();
     }
 
+    /**
+     * Initiates the recycler view.
+     *
+     * Hides the recycler and shows the loader.
+     * Sets the Layout Manager, Adapter and sets a listener that will call the API again for the next page
+     * from the API.
+     *
+     */
     public void initRecycler(){
 
         hideGridStartLoad();
@@ -76,8 +84,11 @@ public class PosterActivity extends AppCompatActivity
                 connectAndFetchData();
             }
         });
-        connectAndFetchData();
     }
+
+    /**
+     * Checks for an active internet connection. If true, starts the AsyncTask to call the API else shows a toast.
+     */
 
     public void connectAndFetchData(){
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
@@ -87,9 +98,13 @@ public class PosterActivity extends AppCompatActivity
 
         if (ni != null && ni.isConnectedOrConnecting()){
             new ApiQueryAsyncTask().execute();
+        } else {
+            Toast.makeText(this, "No internet connection", Toast.LENGTH_SHORT).show();
         }
 
     }
+
+    //Utility methods that shows/hides views on connecting, error or complete.
 
     public void showGrid(){
         mErrorImage.setVisibility(View.GONE);
@@ -106,13 +121,17 @@ public class PosterActivity extends AppCompatActivity
         mGridRecyclerView.setVisibility(View.GONE);
     }
 
+
+
+
+    //On click method to start the details activity.
     @Override
     public void onClick(String movieId, View v) {
         Intent intent = new Intent(this, MovieDetailsActivity.class);
         Bundle extras = new Bundle();
         extras.putString("movieId", movieId);
-        extras.putInt("width", v.getWidth());
-        extras.putInt("height", v.getHeight());
+        extras.putInt("width", v.getMeasuredWidth());
+        extras.putInt("height", v.getMeasuredHeight());
         intent.putExtras(extras);
         startActivity(intent);
     }
@@ -132,6 +151,7 @@ public class PosterActivity extends AppCompatActivity
                     item.setChecked(true);
                     mSortMethod = SortingMethod.POPULAR;
                     initRecycler();
+                    connectAndFetchData();
                 }
                 else item.setChecked(true);
                 return true;
@@ -140,6 +160,7 @@ public class PosterActivity extends AppCompatActivity
                     item.setChecked(true);
                     mSortMethod = SortingMethod.TOP_RATED;
                     initRecycler();
+                    connectAndFetchData();
                 }
                 else item.setChecked(true);
                 return true;
@@ -148,16 +169,13 @@ public class PosterActivity extends AppCompatActivity
         }
     }
 
-    public class ApiQueryAsyncTask extends AsyncTask<String, Void, List<MovieForGrid>> {
-        private final String TAG = ApiQueryAsyncTask.class.getSimpleName();
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            mMovieLoader.setVisibility(View.VISIBLE);
-        }
+    // Will implement loader instead of AsyncTasks in part 2.
+    public class ApiQueryAsyncTask extends AsyncTask<Void, Void, List<MovieForGrid>> {
+
+        private final String tag = ApiQueryAsyncTask.class.getSimpleName();
 
         @Override
-        protected List<MovieForGrid> doInBackground(String... strings) {
+        protected List<MovieForGrid> doInBackground(Void... voids) {
 
             try {
                 String movieJsonResponse = ApiQueryHelper.doQuery(
@@ -165,7 +183,7 @@ public class PosterActivity extends AppCompatActivity
                 return MovieJsonParser.parseForGridView(movieJsonResponse, PosterActivity.this);
 
             } catch (Exception e) {
-                Log.e(TAG, "doInBackground: ", e);
+                Log.e(tag, "doInBackground: ", e);
                 return null;
             }
         }
@@ -181,4 +199,5 @@ public class PosterActivity extends AppCompatActivity
             mPosterAdapter.setMovieData(moviesForGrid);
         }
     }
+
 }
