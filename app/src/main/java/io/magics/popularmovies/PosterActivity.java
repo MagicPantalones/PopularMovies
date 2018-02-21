@@ -72,7 +72,6 @@ public class PosterActivity extends AppCompatActivity
             @Override
             public void endReached(int position) {
                 mPageNumber += 1;
-                Toast.makeText(PosterActivity.this, "Page number " + mPageNumber, Toast.LENGTH_SHORT).show();
                 mMovieLoader.setVisibility(View.VISIBLE);
                 connectAndFetchData();
             }
@@ -112,8 +111,8 @@ public class PosterActivity extends AppCompatActivity
         Intent intent = new Intent(this, MovieDetailsActivity.class);
         Bundle extras = new Bundle();
         extras.putString("movieId", movieId);
-        extras.putInt("width", v.getMeasuredWidth());
-        extras.putInt("height", v.getMeasuredHeight());
+        extras.putInt("width", v.getWidth());
+        extras.putInt("height", v.getHeight());
         intent.putExtras(extras);
         startActivity(intent);
     }

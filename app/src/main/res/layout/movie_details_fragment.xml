@@ -40,11 +40,10 @@
             android:id="@+id/tv_release_date_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:layout_marginStart="16dp"
             android:text="@string/details_release_day_title"
             android:textStyle="bold"
-            app:layout_constraintBottom_toBottomOf="@+id/iv_poster_details"
             app:layout_constraintStart_toEndOf="@+id/iv_poster_details"
             app:layout_constraintTop_toBottomOf="@+id/tv_movie_title" />
 
@@ -61,11 +60,13 @@
             android:id="@+id/tv_vote_average_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginTop="8dp"
             android:text="@string/details_vote_average_title"
             android:textStyle="bold"
+            app:layout_constraintBottom_toTopOf="@+id/tv_plot_text"
             app:layout_constraintStart_toStartOf="@+id/tv_release_date_title"
-            app:layout_constraintTop_toBottomOf="@+id/tv_release_date_text" />
+            app:layout_constraintTop_toBottomOf="@+id/tv_release_date_title" />
 
         <TextView
             android:id="@+id/tv_vote_average_text"
@@ -81,7 +82,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
             android:text="@string/details_plot_title"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"

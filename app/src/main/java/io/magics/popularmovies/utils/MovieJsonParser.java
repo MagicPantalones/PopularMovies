@@ -93,7 +93,7 @@ public class MovieJsonParser {
         posterPath = movieDetails.optString(POSTER_PATH);
         title = movieDetails.optString(TITLE);
         overview = movieDetails.optString(OVERVIEW);
-        voteAverage = Boolean.toString(movieDetails.optBoolean(VOTE_AVERAGE));
+        voteAverage = Double.toString(movieDetails.optDouble(VOTE_AVERAGE));
         voteCount = Integer.toString(movieDetails.optInt(VOTE_COUNT));
         releaseDate = formatDate(movieDetails.optString(RELEASE_DATE));
 

@@ -108,7 +108,7 @@ public class MovieDetailsActivity extends AppCompatActivity {
             GlideApp.with(MovieDetailsActivity.this)
                     .load(posterUrl)
                     .placeholder(R.drawable.logo_app)
-                    .centerCrop()
+                    .fitCenter()
                     .dontAnimate()
                     .into(mPosterIv);
             hideLoader();
