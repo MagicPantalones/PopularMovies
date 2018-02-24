@@ -3,7 +3,6 @@ package io.magics.popularmovies;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,8 +13,10 @@ import com.bumptech.glide.load.resource.bitmap.DownsampleStrategy;
 
 import java.util.List;
 
-import io.magics.popularmovies.models.MovieForGrid;
-import io.magics.popularmovies.utils.ApiQueryHelper;
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import io.magics.popularmovies.models.Movie;
+import io.magics.popularmovies.networkutils.TMDBApiNetworkService;
 import io.magics.popularmovies.utils.GlideApp;
 
 /**
@@ -26,15 +27,15 @@ import io.magics.popularmovies.utils.GlideApp;
 public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterViewHolder> {
 
     private static final String TAG = PosterAdapter.class.getSimpleName();
-    private List<MovieForGrid> mMovieData;
+    private List<Movie> mMovieData;
     private int mViewWidth;
     private int mViewHeight;
     private final PosterClickHandler mClickHandler;
     private ReachedEndHandler mReachedEndHandler;
-    private ApiQueryHelper.ImageSize mImageSize;
+    private TMDBApiNetworkService.ImageSize mImageSize;
 
     public interface PosterClickHandler{
-        void onClick(String movieId, View view);
+        void onClick(Movie movie, View view);
     }
 
     //Help from https://medium.com/@ayhamorfali/android-detect-when-the-recyclerview-reaches-the-bottom-43f810430e1e
@@ -55,7 +56,7 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
         Context context = parent.getContext();
         Boolean orientation = context.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
 
-        mImageSize = ApiQueryHelper.getOptimalImgSize(context);
+        mImageSize = TMDBApiNetworkService.getOptimalImgSize(context);
 
         //Sets the ViewHolder sizes based on the devise's orientation.
         mViewHeight = orientation ? parent.getMeasuredHeight() / 2 : parent.getMeasuredHeight();
@@ -68,13 +69,12 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
 
     @Override
     public void onBindViewHolder(PosterViewHolder holder, int position) {
-        MovieForGrid mfg = mMovieData.get(position);
+        Movie mfg = mMovieData.get(position);
         ImageView iv = holder.mIv;
-        String posterUrl = ApiQueryHelper.buildImageUrl(mfg.getPosterPath(), mImageSize);
+        String posterUrl = TMDBApiNetworkService.posterUrlConverter(mImageSize, mfg.getPosterUrl());
 
         if (position == mMovieData.size() - 1){
             mReachedEndHandler.endReached(position);
-            Log.d(TAG, "IMAGESIZE " + mImageSize);
         }
 
         iv.setContentDescription(mfg.getTitle());
@@ -97,29 +97,29 @@ public class PosterAdapter extends RecyclerView.Adapter<PosterAdapter.PosterView
         return mMovieData.size();
     }
 
-    public void setMovieData(List<MovieForGrid> moviesForGrid){
-        if (moviesForGrid == null) {
+    public void setMovieData(List<Movie> movies){
+        if (movies == null) {
             return;
         }else if (mMovieData == null){
-            mMovieData = moviesForGrid;
+            mMovieData = movies;
         } else {
-            mMovieData.addAll(moviesForGrid);
+            mMovieData.addAll(movies);
         }
         notifyDataSetChanged();
     }
 
     public class PosterViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        private final ImageView mIv;
+        @BindView(R.id.iv_poster) ImageView mIv;
 
         public PosterViewHolder(View itemView) {
             super(itemView);
-            mIv = itemView.findViewById(R.id.iv_poster);
+            ButterKnife.bind(this, itemView);
             itemView.setOnClickListener(this);
         }
 
         @Override
         public void onClick(View v) {
-            mClickHandler.onClick(mMovieData.get(getAdapterPosition()).getMovieId(), v);
+            mClickHandler.onClick(mMovieData.get(getAdapterPosition()), v);
         }
 
     }
