@@ -4,7 +4,7 @@
     
     <string name="details_release_day_title">Release Date:</string>
     <string name="details_vote_average_title">Vote Average:</string>
-    <string name="details_vote_average_text">%1$s out of %2$s votes</string>
+    <string name="details_vote_average_text">%1$s out of %2$d votes</string>
     <string name="details_plot_title">Plot:</string>
 
     <string name="mi_sort_by_popular">Most Popular</string>
