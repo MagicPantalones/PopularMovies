@@ -70,3 +70,5 @@ app/libs/
 /gradle.properties
 /app/src/main/res/values/api_keys.xml
 src/main/res/values/api_keys.xml
+/.idea/dictionaries/Erik.xml
+/.idea/misc.xml
